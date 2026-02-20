@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+
+        /* Style for the Filter Form */
+        .filter-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-section label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .filter-section select {
+            padding: 5px;
+            margin-right: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .filter-section button {
+            padding: 6px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .filter-section button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for Movie Cards */
+        .movie-card {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .movie-card p {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎬 Movie List</h1>
+
+    <div class="filter-section">
+        <form method="GET">
+            <label>Genre:</label>
+            <select name="genre" multiple>
+                <option value="All">All</option>
+                <option value="Action">Action</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Horror">Horror</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Romance">Romance</option>
+            </select>
+
+            <label>Language:</label>
+            <select name="language" multiple>
+                <option value="">All</option>
+                <option value="Hindi">Hindi</option>
+                <option value="English">English</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+    <hr>
+
+    {% for movie in movies %}
+        <div class="movie-card">
+            <div class="title">{{ movie.title }}</div>
+            
+            <p><b>Language:</b> {{ movie.language }}</p>
+            
+            <p><b>Languages:</b>
+                {% for l in movie.language.all %}
+                    {{ l.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+
+
+
+
+
+            <p><b>Genre:</b> {{ movie.genre }}</p>
+            <p><b>Genres:</b>
+                {% for g in movie.genre.all %}
+                    {{ g.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+
+            
+            <p><b>Duration:</b> {{ movie.duration }} minutes</p>
+            <p><b>Release Date:</b> {{ movie.release_date }}</p>
+            <p><b>Rating:</b> ⭐ {{ movie.rating }}</p>
+        </div>
+    {% empty %}
+        <p>No movies found matching your filters.</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>
