@@ -108,8 +108,6 @@
         <div class="movie-card">
             <div class="title">{{ movie.title }}</div>
             
-            <p><b>Language:</b> {{ movie.language }}</p>
-            
             <p><b>Languages:</b>
                 {% for l in movie.language.all %}
                     {{ l.name }}{% if not forloop.last %}, {% endif %}
@@ -119,8 +117,6 @@
 
 
 
-
-            <p><b>Genre:</b> {{ movie.genre }}</p>
             <p><b>Genres:</b>
                 {% for g in movie.genre.all %}
                     {{ g.name }}{% if not forloop.last %}, {% endif %}
