@@ -1,0 +1,1 @@
+web: gunicorn bookmyshow_django.wsgi
