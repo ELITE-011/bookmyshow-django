@@ -17,4 +17,6 @@ def movie_list(request):
 
     return render(request, "movies/movie_list.html", {
         "movies": movies,
+        "genres": Genre.objects.all(),
+        "languages": Language.objects.all(),
     })
