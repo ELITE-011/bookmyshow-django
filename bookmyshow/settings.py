@@ -7,13 +7,13 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # SECURITY SETTINGS
 SECRET_KEY = 'django-insecure-874a5h+^+j6bc+$+$^-$hh&us)0jna#q3=#kjvzz_iq$wg5^7)'
 
-DEBUG = False
+# 🔥 IMPORTANT FOR MEDIA
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # APPLICATIONS
@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Important for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,7 +62,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bookmyshow.wsgi.application'
 
 
-# DATABASE (SQLite works fine for internship)
+# DATABASE
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -87,11 +87,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-# STATIC FILE SETTINGS (VERY IMPORTANT)
+# STATIC FILES
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ✅ MEDIA FILES (FOR POSTER)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

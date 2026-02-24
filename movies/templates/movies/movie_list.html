@@ -1,136 +1,241 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Movie List</title>
+    <title>BookMyShow | Movies</title>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #2e4191, #702a7d);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            padding: 18px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .navbar h2 {
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #ffe600;
+        }
+
+        /* Container */
         .container {
-            width: 80%;
-            margin: auto;
+            width: 90%;
+            margin: 40px auto;
         }
 
-        /* Style for the Filter Form */
+        /* Filter Section */
         .filter-section {
-            background: #fff;
+            background: white;
             padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
-        .filter-section label {
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .filter-section select {
-            padding: 5px;
-            margin-right: 20px;
-            border-radius: 5px;
+        .filter-section select,
+        .filter-section button {
+            padding: 10px 15px;
+            border-radius: 8px;
             border: 1px solid #ccc;
+            margin-right: 10px;
+            font-weight: 500;
         }
 
         .filter-section button {
-            padding: 6px 15px;
-            background-color: #007bff;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+            transition: 0.3s;
         }
 
         .filter-section button:hover {
-            background-color: #0056b3;
+            opacity: 0.85;
         }
 
-        /* Style for Movie Cards */
+        /* Movie Grid */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 30px;
+        }
+
+        /* Movie Card */
         .movie-card {
-            background: white;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 10px;
-            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            background: #bbbec4d3;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            transition: 0.4s;
         }
 
-        .title {
-            font-size: 22px;
+        .movie-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 18px;
+        }
+
+        .movie-title {
+            font-size: 20px;
             font-weight: bold;
-            color: #333;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
             margin-bottom: 10px;
+            color: #8217d3;
         }
 
-        .movie-card p {
-            margin: 5px 0;
-            color: #555;
+        .movie-info p {
+            font-size: 14px;
+            margin: 6px 0;
+            color: #444;
+        }
+
+        .rating {
+            color: #ff9800;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .book-btn {
+            margin-top: 12px;
+            display: inline-block;
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .book-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #111;
+            color: white;
+            margin-top: 60px;
+            font-size: 14px;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>🎬 Movie List</h1>
+<!-- Navbar -->
+<div class="navbar">
+    <h2>🎬 BookMyShow</h2>
+    <div>
+        <a href="#">Movies</a>
+        <a href="#">Events</a>
+        <a href="#">Sports</a>
+        <a href="#">Login</a>
+    </div>
+</div>
 
+<div class="container">
+
+    <!-- Filter Section -->
     <div class="filter-section">
         <form method="GET">
-            <label>Genre:</label>
-            <select name="genre" multiple>
-                <option value="All">All</option>
+            <select name="genre">
+                <option value="">All Genres</option>
                 <option value="Action">Action</option>
                 <option value="Comedy">Comedy</option>
                 <option value="Drama">Drama</option>
                 <option value="Horror">Horror</option>
-                <option value="Thriller">Thriller</option>
                 <option value="Romance">Romance</option>
             </select>
 
-            <label>Language:</label>
-            <select name="language" multiple>
-                <option value="">All</option>
+            <select name="language">
+                <option value="">All Languages</option>
                 <option value="Hindi">Hindi</option>
                 <option value="English">English</option>
             </select>
 
-            <button type="submit">Filter</button>
+            <button type="submit">Apply Filter</button>
         </form>
     </div>
 
-    <hr>
+    <!-- Movie Grid -->
+    <div class="movie-grid">
+        {% for movie in movies %}
+            <div class="movie-card">
+                
+                {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" class="movie-poster">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x400" class="movie-poster">
+                {% endif %}
+                
+                <div class="movie-info">
+                    <div class="movie-title">{{ movie.title }}</div>
 
-    {% for movie in movies %}
-        <div class="movie-card">
-            <div class="title">{{ movie.title }}</div>
-            
-            <p><b>Languages:</b>
-                {% for l in movie.language.all %}
-                    {{ l.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </p>
+                    <p><b>Genres:</b>
+                        {% for g in movie.genre.all %}
+                            {{ g.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
 
+                    <p><b>Languages:</b>
+                        {% for l in movie.language.all %}
+                            {{ l.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
 
+                    <p><b>Duration:</b> {{ movie.duration }} mins</p>
+                    <p><b>Release:</b> {{ movie.release_date }}</p>
+                    <p class="rating">⭐ {{ movie.rating }}/10</p>
 
+                    <a href="#" class="book-btn">Book Now</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="color:white;">No movies found.</p>
+        {% endfor %}
+    </div>
 
-            <p><b>Genres:</b>
-                {% for g in movie.genre.all %}
-                    {{ g.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </p>
+</div>
 
-            
-            <p><b>Duration:</b> {{ movie.duration }} minutes</p>
-            <p><b>Release Date:</b> {{ movie.release_date }}</p>
-            <p><b>Rating:</b> ⭐ {{ movie.rating }}</p>
-        </div>
-    {% empty %}
-        <p>No movies found matching your filters.</p>
-    {% endfor %}
+<!-- Footer -->
+<div class="footer">
+    © 2026 BookMyShow Clone | Built with Django
 </div>
 
 </body>
