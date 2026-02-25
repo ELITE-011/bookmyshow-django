@@ -4,14 +4,14 @@ from .models import Movie, Genre, Language
 def movie_list(request):
     movies = Movie.objects.all()
 
-    selected_genres = request.GET.getlist('genre')
-    selected_languages = request.GET.getlist('language')
+    selected_genre = request.GET.get('genre')
+    selected_language = request.GET.get('language')
 
-    if selected_genres:
-        movies = movies.filter(genre__name__in=selected_genres)
+    if selected_genre:
+        movies = movies.filter(genre__name=selected_genre)
 
-    if selected_languages:
-        movies = movies.filter(language__name__in=selected_languages)
+    if selected_language:
+        movies = movies.filter(language__name=selected_language)
 
     movies = movies.distinct()
 

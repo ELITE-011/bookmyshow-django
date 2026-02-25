@@ -15,7 +15,6 @@
             background: linear-gradient(135deg, #2e4191, #702a7d);
         }
 
-        /* Navbar */
         .navbar {
             background: linear-gradient(90deg, #ff512f, #dd2476);
             padding: 18px 40px;
@@ -43,13 +42,11 @@
             color: #ffe600;
         }
 
-        /* Container */
         .container {
             width: 90%;
             margin: 40px auto;
         }
 
-        /* Filter Section */
         .filter-section {
             background: white;
             padding: 20px;
@@ -79,14 +76,12 @@
             opacity: 0.85;
         }
 
-        /* Movie Grid */
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
             gap: 30px;
         }
 
-        /* Movie Card */
         .movie-card {
             background: #bbbec4d3;
             border-radius: 20px;
@@ -144,7 +139,6 @@
             opacity: 0.85;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -158,7 +152,6 @@
 
 <body>
 
-<!-- Navbar -->
 <div class="navbar">
     <h2>🎬 BookMyShow</h2>
     <div>
@@ -171,22 +164,30 @@
 
 <div class="container">
 
-    <!-- Filter Section -->
+    <!-- ✅ Dynamic Filter Section -->
     <div class="filter-section">
         <form method="GET">
+
+            <!-- Dynamic Genre -->
             <select name="genre">
                 <option value="">All Genres</option>
-                <option value="Action">Action</option>
-                <option value="Comedy">Comedy</option>
-                <option value="Drama">Drama</option>
-                <option value="Horror">Horror</option>
-                <option value="Romance">Romance</option>
+                {% for g in genres %}
+                    <option value="{{ g.name }}"
+                        {% if request.GET.genre == g.name %}selected{% endif %}>
+                        {{ g.name }}
+                    </option>
+                {% endfor %}
             </select>
 
+            <!-- Dynamic Language -->
             <select name="language">
                 <option value="">All Languages</option>
-                <option value="Hindi">Hindi</option>
-                <option value="English">English</option>
+                {% for l in languages %}
+                    <option value="{{ l.name }}"
+                        {% if request.GET.language == l.name %}selected{% endif %}>
+                        {{ l.name }}
+                    </option>
+                {% endfor %}
             </select>
 
             <button type="submit">Apply Filter</button>
@@ -197,13 +198,13 @@
     <div class="movie-grid">
         {% for movie in movies %}
             <div class="movie-card">
-                
+
                 {% if movie.poster %}
                     <img src="{{ movie.poster.url }}" class="movie-poster">
                 {% else %}
                     <img src="https://via.placeholder.com/300x400" class="movie-poster">
                 {% endif %}
-                
+
                 <div class="movie-info">
                     <div class="movie-title">{{ movie.title }}</div>
 
@@ -233,7 +234,6 @@
 
 </div>
 
-<!-- Footer -->
 <div class="footer">
     © 2026 BookMyShow Clone | Built with Django
 </div>
