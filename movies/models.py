@@ -24,7 +24,7 @@ class Movie(models.Model):
     language = models.ManyToManyField(Language)
 
 
-    poster = models.ImageField(upload_to='posters/', blank=True, null=True)
+    poster = models.URLField(blank=True, null=True)
  
     def __str__(self):
         return self.title
