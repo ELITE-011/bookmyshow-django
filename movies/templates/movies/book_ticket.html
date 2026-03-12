@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Ticket</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#3f2b96,#a8c0ff);
+            padding:40px;
+        }
+
+        .booking-box{
+            width:400px;
+            margin:auto;
+            background:white;
+            padding:25px;
+            border-radius:10px;
+        }
+
+        img{
+            width:150px;
+            border-radius:10px;
+        }
+
+        input,select{
+            width:100%;
+            padding:10px;
+            margin-top:8px;
+            margin-bottom:15px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            background:#ff4d6d;
+            color:white;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="booking-box">
+
+<h2>{{ movie.title }}</h2>
+
+<img src="{{ movie.poster.url }}">
+
+<p><b>Duration:</b> {{ movie.duration }} mins</p>
+
+<form method="POST">
+{% csrf_token %}
+
+<label>Name</label>
+<input type="text" name="name" required>
+
+<label>Email</label>
+<input type="email" name="email" required>
+
+<label>Seats</label>
+<select name="seats">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+</select>
+
+<button type="submit">Confirm Booking</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

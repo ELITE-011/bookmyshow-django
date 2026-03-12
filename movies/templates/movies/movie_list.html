@@ -225,9 +225,10 @@
                     <p><b>Release:</b> {{ movie.release_date }}</p>
                     <p class="rating">⭐ {{ movie.rating }}/10</p>
 
-                    <a href="{% url 'movie_detail' movie.id %}">
-                          <button class="book-btn">Book Now</button>
-                    </a>
+                <a href="{% url 'book_ticket' movie.id %}"
+                <button class="book-btn">Book Now</button>
+                </a>
+
                 </div>
             </div>
         {% empty %}

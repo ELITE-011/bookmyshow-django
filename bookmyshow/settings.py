@@ -123,6 +123,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.environ.get("deepj3071@gmail.com")
-EMAIL_HOST_PASSWORD = os.environ.get("dcak obhg qyta vsym")
+EMAIL_HOST_PASSWORD = os.environ.get("dcakobhgqytavsym")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
