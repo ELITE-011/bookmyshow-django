@@ -8,14 +8,17 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY SETTINGS
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-bookmyshow-project-secret-key"
+)
 
 # 🔥 IMPORTANT FOR MEDIA
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "bookmyshow-django-1-mi2b.onrender.com"
+    "127.0.0.1,localhost,bookmyshow-django-1-mi2b.onrender.com"
 ).split(",")
 
 
@@ -111,3 +114,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+import os
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.environ.get("deepj3071@gmail.com")
+EMAIL_HOST_PASSWORD = os.environ.get("dcak obhg qyta vsym")
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

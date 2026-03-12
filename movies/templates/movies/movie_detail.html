@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ movie.title }}</title>
+</head>
+<body>
+
+<h1>{{ movie.title }}</h1>
+
+<img src="{{ movie.poster }}" width="200">
+
+<p><b>Genres:</b>
+{% for g in movie.genre.all %}
+{{ g.name }}
+{% endfor %}
+</p>
+
+<p><b>Languages:</b>
+{% for l in movie.language.all %}
+{{ l.name }}
+{% endfor %}
+</p>
+
+<p><b>Duration:</b> {{ movie.duration }} mins</p>
+
+<p><b>Release:</b> {{ movie.release_date }}</p>
+
+<p><b>Rating:</b> {{ movie.rating }}/10</p>
+
+</body>
+</html>

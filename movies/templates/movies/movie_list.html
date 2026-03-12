@@ -200,9 +200,10 @@
             <div class="movie-card">
 
                 {% if movie.poster %}
-                    <img src="{{ movie.poster.url }}" class="movie-poster">
+                   <img src="{{ movie.poster }}" class="movie-poster" alt="{{ movie.title }}"
+                        onerror="this.src='https://via.placeholder.com/300x400';">
                 {% else %}
-                    <img src="https://via.placeholder.com/300x400" class="movie-poster">
+                   <img src="https://via.placeholder.com/300x400" class="movie-poster" alt="No Poster">
                 {% endif %}
 
                 <div class="movie-info">
@@ -224,7 +225,9 @@
                     <p><b>Release:</b> {{ movie.release_date }}</p>
                     <p class="rating">⭐ {{ movie.rating }}/10</p>
 
-                    <a href="#" class="book-btn">Book Now</a>
+                    <a href="{% url 'movie_detail' movie.id %}">
+                          <button class="book-btn">Book Now</button>
+                    </a>
                 </div>
             </div>
         {% empty %}
