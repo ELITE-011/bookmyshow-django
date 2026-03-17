@@ -63,7 +63,8 @@ Your booking is confirmed!
 Movie: {movie.title}
 Seats: {seats}
 
-Enjoy your movie.
+
+Enjoy your movie experience 🎥🍿
 """
 
         send_mail(

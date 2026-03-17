@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Book Ticket</title>
 
     <style>
         body{
             font-family: Arial;
-            background: linear-gradient(135deg,#3f2b96,#a8c0ff);
+            background: linear-gradient(135deg,#3f2b96 ,#a8c0ff);
             padding:40px;
         }
 
         .booking-box{
             width:400px;
             margin:auto;
-            background:white;
-            padding:25px;
+            background: #f8f8ff;
+            padding:40px;
             border-radius:10px;
         }
 
@@ -53,6 +54,7 @@
 <p><b>Duration:</b> {{ movie.duration }} mins</p>
 
 <form method="POST">
+
 {% csrf_token %}
 
 <label>Name</label>
@@ -62,6 +64,7 @@
 <input type="email" name="email" required>
 
 <label>Seats</label>
+
 <select name="seats">
 <option>1</option>
 <option>2</option>
@@ -74,7 +77,12 @@
 
 </form>
 
+<div class="footer">
+Enjoy your movie experience 🍿
+</div>
+
 </div>
 
 </body>
+
 </html>

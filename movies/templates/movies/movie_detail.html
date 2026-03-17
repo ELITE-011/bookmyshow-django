@@ -1,31 +1,77 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ movie.title }}</title>
+<title>{{ movie.title }}</title>
+
+<style>
+body{
+font-family:Arial;
+background:#111;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+img{
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.trailer{
+margin-top:30px;
+}
+
+iframe{
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+</style>
+
 </head>
+
 <body>
 
 <h1>{{ movie.title }}</h1>
 
-<img src="{{ movie.poster }}" width="200">
+<img src="{{ movie.poster }}" width="250">
 
 <p><b>Genres:</b>
 {% for g in movie.genre.all %}
-{{ g.name }}
+{{ g.name }}{% if not forloop.last %}, {% endif %}
 {% endfor %}
 </p>
 
 <p><b>Languages:</b>
 {% for l in movie.language.all %}
-{{ l.name }}
+{{ l.name }}{% if not forloop.last %}, {% endif %}
 {% endfor %}
 </p>
 
 <p><b>Duration:</b> {{ movie.duration }} mins</p>
-
 <p><b>Release:</b> {{ movie.release_date }}</p>
+<p><b>Rating:</b> ⭐ {{ movie.rating }}/10</p>
 
-<p><b>Rating:</b> {{ movie.rating }}/10</p>
+<div class="trailer">
+
+<h2>🎬 Movie Trailer</h2>
+
+{% if movie.trailer_url %}
+
+<iframe
+width="700"
+height="400"
+src="{{ movie.trailer_url }}"
+frameborder="0"
+allowfullscreen>
+</iframe>
+
+{% else %}
+
+<p>No trailer available.</p>
+
+{% endif %}
+
+</div>
 
 </body>
 </html>

@@ -1,246 +1,218 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BookMyShow | Movies</title>
+<title>BookMyShow | Movies</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #2e4191, #702a7d);
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-        .navbar {
-            background: linear-gradient(90deg, #ff512f, #dd2476);
-            padding: 18px 40px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+body{
+font-family:Segoe UI;
+background:linear-gradient(135deg,#2e4191,#702a7d);
+}
 
-        .navbar h2 {
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
+.navbar{
+background:linear-gradient(90deg,#ff512f,#dd2476);
+padding:18px 40px;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: 0.3s;
-        }
+.container{
+width:90%;
+margin:40px auto;
+}
 
-        .navbar a:hover {
-            color: #ffe600;
-        }
+.movie-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+gap:30px;
+}
 
-        .container {
-            width: 90%;
-            margin: 40px auto;
-        }
+.movie-card{
+background:#bbbec4d3;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 12px 25px rgba(0,0,0,0.15);
+transition:0.3s;
+}
 
-        .filter-section {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 35px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
+.movie-card:hover{
+transform:translateY(-10px);
+}
 
-        .filter-section select,
-        .filter-section button {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-right: 10px;
-            font-weight: 500;
-        }
+.movie-poster{
+width:100%;
+height:320px;
+object-fit:cover;
+cursor:pointer;
+}
 
-        .filter-section button {
-            background: linear-gradient(90deg, #ff512f, #dd2476);
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+.movie-info{
+padding:18px;
+}
 
-        .filter-section button:hover {
-            opacity: 0.85;
-        }
+.movie-title{
+font-size:20px;
+font-weight:bold;
+margin-bottom:10px;
+color:#8217d3;
+}
 
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-            gap: 30px;
-        }
+.movie-info p{
+font-size:14px;
+margin:6px 0;
+}
 
-        .movie-card {
-            background: #bbbec4d3;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-            transition: 0.4s;
-        }
+.book-btn{
+margin-top:12px;
+display:inline-block;
+background:linear-gradient(90deg,#f88a1c,#dd2476);
+color:white;
+padding:8px 14px;
+border-radius:10px;
+text-decoration:none;
+font-size:14px;
+border:none;
+cursor:pointer;
+}
 
-        .movie-card:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
+.popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+justify-content:center;
+align-items:center;
+z-index:1000;
+}
 
-        .movie-poster {
-            width: 100%;
-            height: 320px;
-            object-fit: cover;
-        }
+.popup-content{
+position:relative;
+}
 
-        .movie-info {
-            padding: 18px;
-        }
+.close{
+position:absolute;
+top:-30px;
+right:0;
+color:white;
+font-size:30px;
+cursor:pointer;
+}
 
-        .movie-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #8217d3;
-        }
+iframe{
+border-radius:10px;
+}
 
-        .movie-info p {
-            font-size: 14px;
-            margin: 6px 0;
-            color: #444;
-        }
-
-        .rating {
-            color: #ff9800;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        .book-btn {
-            margin-top: 12px;
-            display: inline-block;
-            background: linear-gradient(90deg, #ff512f, #dd2476);
-            color: white;
-            padding: 8px 14px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .book-btn:hover {
-            opacity: 0.85;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background: #111;
-            color: white;
-            margin-top: 60px;
-            font-size: 14px;
-        }
-    </style>
+</style>
 </head>
 
 <body>
 
 <div class="navbar">
-    <h2>🎬 BookMyShow</h2>
-    <div>
-        <a href="#">Movies</a>
-        <a href="#">Events</a>
-        <a href="#">Sports</a>
-        <a href="#">Login</a>
-    </div>
+<h2>🎬 BookMyShow</h2>
 </div>
 
 <div class="container">
 
-    <!-- ✅ Dynamic Filter Section -->
-    <div class="filter-section">
-        <form method="GET">
+<div class="movie-grid">
 
-            <!-- Dynamic Genre -->
-            <select name="genre">
-                <option value="">All Genres</option>
-                {% for g in genres %}
-                    <option value="{{ g.name }}"
-                        {% if request.GET.genre == g.name %}selected{% endif %}>
-                        {{ g.name }}
-                    </option>
-                {% endfor %}
-            </select>
+{% for movie in movies %}
 
-            <!-- Dynamic Language -->
-            <select name="language">
-                <option value="">All Languages</option>
-                {% for l in languages %}
-                    <option value="{{ l.name }}"
-                        {% if request.GET.language == l.name %}selected{% endif %}>
-                        {{ l.name }}
-                    </option>
-                {% endfor %}
-            </select>
+<div class="movie-card">
 
-            <button type="submit">Apply Filter</button>
-        </form>
-    </div>
+<!-- Poster Click → Trailer -->
+<img src="{{ movie.poster }}"
+class="movie-poster"
+onclick="openTrailer('{{ movie.trailer_url }}')">
 
-    <!-- Movie Grid -->
-    <div class="movie-grid">
-        {% for movie in movies %}
-            <div class="movie-card">
+<div class="movie-info">
 
-                {% if movie.poster %}
-                   <img src="{{ movie.poster }}" class="movie-poster" alt="{{ movie.title }}"
-                        onerror="this.src='https://via.placeholder.com/300x400';">
-                {% else %}
-                   <img src="https://via.placeholder.com/300x400" class="movie-poster" alt="No Poster">
-                {% endif %}
+<div class="movie-title">{{ movie.title }}</div>
 
-                <div class="movie-info">
-                    <div class="movie-title">{{ movie.title }}</div>
+<p><b>Genres:</b>
+{% for g in movie.genre.all %}
+{{ g.name }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+</p>
 
-                    <p><b>Genres:</b>
-                        {% for g in movie.genre.all %}
-                            {{ g.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
+<p><b>Languages:</b>
+{% for l in movie.language.all %}
+{{ l.name }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+</p>
 
-                    <p><b>Languages:</b>
-                        {% for l in movie.language.all %}
-                            {{ l.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
+<p><b>Duration:</b> {{ movie.duration }} mins</p>
 
-                    <p><b>Duration:</b> {{ movie.duration }} mins</p>
-                    <p><b>Release:</b> {{ movie.release_date }}</p>
-                    <p class="rating">⭐ {{ movie.rating }}/10</p>
+<p><b>Release:</b> {{ movie.release_date }}</p>
 
-                <a href="{% url 'book_ticket' movie.id %}"
-                <button class="book-btn">Book Now</button>
-                </a>
+<p>⭐ {{ movie.rating }}/10</p>
 
-                </div>
-            </div>
-        {% empty %}
-            <p style="color:white;">No movies found.</p>
-        {% endfor %}
-    </div>
+<!-- Book Button -->
+<a href="{% url 'book_ticket' movie.id %}">
+<button class="book-btn">Book Now</button>
+</a>
 
 </div>
 
-<div class="footer">
-    © 2026 BookMyShow Clone | Built with Django
 </div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<!-- Trailer Popup -->
+
+<div class="popup" id="trailerPopup">
+
+<div class="popup-content">
+
+<span class="close" onclick="closeTrailer()">✖</span>
+
+<iframe id="trailerFrame"
+width="800"
+height="450"
+src=""
+frameborder="0"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen>
+</iframe>
+
+</div>
+
+</div>
+
+<script>
+
+function openTrailer(videoId){
+
+    var url = "https://www.youtube.com/watch?v=" + videoId;
+
+    window.open(url, "_blank");
+
+}
+
+function closeTrailer(){
+
+document.getElementById("trailerPopup").style.display="none";
+
+document.getElementById("trailerFrame").src="";
+
+}
+
+</script>
 
 </body>
 </html>
