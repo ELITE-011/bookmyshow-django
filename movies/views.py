@@ -63,18 +63,20 @@ Your booking is confirmed!
 Movie: {movie.title}
 Seats: {seats}
 
-
 Enjoy your movie experience 🎥🍿
 """
 
-        send_mail(
-            "Ticket Confirmation",
-            message,
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False
-        )
+        try:
+            send_mail(
+                "Ticket Confirmation",
+                message,
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=True
+            )
+        except Exception as e:
+            print("Email Error:", e)
 
-        return render(request,"movies/success.html",{"movie":movie})
+        return render(request, "movies/success.html", {"movie": movie})
 
-    return render(request,"movies/book_ticket.html",{"movie":movie})    
+    return render(request, "movies/book_ticket.html", {"movie": movie})
