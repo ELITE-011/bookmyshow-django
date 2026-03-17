@@ -66,16 +66,26 @@ Seats: {seats}
 Enjoy your movie experience 🎥🍿
 """
 
+        # SAFE EMAIL SEND (non-blocking protection)
         try:
-            send_mail(
-                subject="Ticket Confirmation",
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=True
-            )
+            import threading
+
+            def send_email():
+                try:
+                    send_mail(
+                        subject="Ticket Confirmation",
+                        message=message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[email],
+                        fail_silently=True
+                    )
+                except Exception as e:
+                    print("EMAIL ERROR:", e)
+
+            threading.Thread(target=send_email).start()
+
         except Exception as e:
-            print("EMAIL ERROR:", e)
+            print("THREAD ERROR:", e)
 
         return render(request, "movies/success.html", {"movie": movie})
 
