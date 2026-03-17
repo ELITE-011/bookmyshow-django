@@ -1,23 +1,23 @@
 """
 Django settings for bookmyshow project.
 """
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+import dj_database_url
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY SETTINGS
+
+# SECURITY
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",
     "django-insecure-bookmyshow-project-secret-key"
 )
 
-# 🔥 IMPORTANT FOR MEDIA
 DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get(
@@ -37,12 +37,8 @@ INSTALLED_APPS = [
     'movies',
 ]
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    ...
-]
 
+# MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -55,9 +51,11 @@ MIDDLEWARE = [
 ]
 
 
+# URLS
 ROOT_URLCONF = 'bookmyshow.urls'
 
 
+# TEMPLATES
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,11 +72,11 @@ TEMPLATES = [
 ]
 
 
+# WSGI
 WSGI_APPLICATION = 'bookmyshow.wsgi.application'
 
 
-import dj_database_url
-
+# DATABASE
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get(
@@ -98,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# INTERNATIONALIZATION
+# LANGUAGE
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -108,19 +106,19 @@ USE_TZ = True
 # STATIC FILES
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-# ✅ MEDIA FILES (FOR POSTER)
+# MEDIA FILES
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
+# DEFAULT FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-import os
 
+# EMAIL SETTINGS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

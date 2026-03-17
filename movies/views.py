@@ -68,14 +68,14 @@ Enjoy your movie experience 🎥🍿
 
         try:
             send_mail(
-                "Ticket Confirmation",
-                message,
-                settings.EMAIL_HOST_USER,
-                [email],
+                subject="Ticket Confirmation",
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
                 fail_silently=True
             )
         except Exception as e:
-            print("Email Error:", e)
+            print("EMAIL ERROR:", e)
 
         return render(request, "movies/success.html", {"movie": movie})
 
