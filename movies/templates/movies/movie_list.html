@@ -71,17 +71,20 @@ font-size:14px;
 margin:6px 0;
 }
 
-.book-btn{
-margin-top:12px;
-display:inline-block;
-background:linear-gradient(90deg,#f88a1c,#dd2476);
-color:white;
-padding:8px 14px;
-border-radius:10px;
-text-decoration:none;
-font-size:14px;
-border:none;
-cursor:pointer;
+.book-btn {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    border: none;
+    padding: 10px 18px;
+    color: white;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.book-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .popup{
@@ -159,8 +162,8 @@ onclick="openTrailer('{{ movie.trailer_url }}')">
 <p>⭐ {{ movie.rating }}/10</p>
 
 <!-- Book Button -->
-<a href="{% url 'book_ticket' movie.id %}">
-<button class="book-btn">Book Now</button>
+<a href="{% url 'seat_selection' movie.id %}">
+    <button class="book-btn">Book Now</button>
 </a>
 
 </div>

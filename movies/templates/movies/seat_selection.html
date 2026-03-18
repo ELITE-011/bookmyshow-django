@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Seats</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI';
+            background: linear-gradient(135deg, #1d2671, #c33764);
+            color: white;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        .screen {
+            margin: 20px auto;
+            width: 300px;
+            background: #ccc;
+            color: black;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .seats {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .seat {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .available {
+            background: white;
+        }
+
+        .selected {
+            background: #00c853;
+        }
+
+        .booked {
+            background: #777;
+            cursor: not-allowed;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        .form-box {
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            background: #00c853;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #009624;
+        }
+        
+        .poster {
+            width: 180px;
+            border-radius: 10px;
+            margin-top: 10px;
+             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+</style>
+
+    </style>
+</head>
+
+<body>
+
+<h2>Select Seats for {{ movie.title }}</h2>
+<img src="{{ movie.poster }}" alt="{{ movie.title }}" class="poster">
+
+<div class="screen">Screen</div>
+
+<form method="POST" action="{% url 'book_ticket' movie.id %}">
+    {% csrf_token %}
+
+    <div class="seats">
+        {% for seat in seats %}
+            <label>
+                <input type="checkbox" name="seats" value="{{ seat.seat_number }}"
+                {% if seat.is_booked %}disabled{% endif %}>
+
+                <div class="seat 
+                    {% if seat.is_booked %}booked{% else %}available{% endif %}">
+                    {{ seat.seat_number }}
+                </div>
+            </label>
+        {% endfor %}
+    </div>
+
+    <div class="form-box">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+    </div>
+
+    <br>
+
+    <button type="submit">Confirm Booking</button>
+
+</form>
+
+</body>
+</html>
+<script>
+document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+    checkbox.addEventListener('change', function() {
+        const seat = this.nextElementSibling;
+
+        if (this.checked) {
+            seat.classList.remove('available');
+            seat.classList.add('selected');
+        } else {
+            seat.classList.remove('selected');
+            seat.classList.add('available');
+        }
+    });
+});
+</script>

@@ -53,7 +53,8 @@ def book_ticket(request, movie_id):
 
         name = request.POST.get("name")
         email = request.POST.get("email")
-        seats = request.POST.get("seats")
+        seats = request.POST.getlist("seats")
+        seats_str = ", ".join(seats)
 
         message = f"""
 Hello {name},
@@ -61,7 +62,7 @@ Hello {name},
 Your booking is confirmed!
 
 Movie: {movie.title}
-Seats: {seats}
+Seats: {seats_str}
 
 Enjoy your movie experience 🎥🍿
 """
@@ -90,3 +91,15 @@ Enjoy your movie experience 🎥🍿
         return render(request, "movies/success.html", {"movie": movie})
 
     return render(request, "movies/book_ticket.html", {"movie": movie})
+
+from .models import Seat   # keep this import
+
+def seat_selection(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+
+    seats = Seat.objects.filter(movie=movie)
+
+    return render(request, "movies/seat_selection.html", {
+        "movie": movie,
+        "seats": seats
+    })
