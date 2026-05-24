@@ -6,4 +6,7 @@ urlpatterns = [
     path("movie/<int:id>/", views.movie_detail, name="movie_detail"),
     path('book/<int:movie_id>/', views.book_ticket, name='book_ticket'),
     path('seats/<int:movie_id>/', views.seat_selection, name='seat_selection'),
+    path('pay/', views.create_checkout_session, name='pay'),
+    path('success/', views.success, name='success'),
+    path('cancel/', views.cancel, name='cancel'),
 ]
