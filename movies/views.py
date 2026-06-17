@@ -126,16 +126,32 @@ def create_checkout_session(request):
 
         mode='payment',
 
-        success_url='http://127.0.0.1:8000/success/',
-        cancel_url='http://127.0.0.1:8000/cancel/',
+        success_url='https://bookmyshow-django-1-mi2b.onrender.com/success/',
+        cancel_url='https://bookmyshow-django-1-mi2b.onrender.com/cancel/',
     )
 
     return redirect(session.url)    
 
 from django.http import HttpResponse
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 def success(request):
-    return HttpResponse("🎉 Payment Successful - Booking Confirmed")
+
+    send_mail(
+        subject="Ticket Confirmation",
+        message="""
+Your booking has been confirmed.
+
+Thank you for booking with BookMyShow.
+        """,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=["deepj3071@gmail.com"],
+        fail_silently=True
+    )
+
+    return render(request, "movies/payment_success.html")
 
 def cancel(request):
-    return HttpResponse("❌ Payment Failed or Cancelled")
+    return render(request, "movies/payment_cancel.html")
