@@ -143,11 +143,12 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 
-from django.http import HttpResponse
-
 def success(request):
-    return HttpResponse("SUCCESS PAGE WORKING")
-
+    try:
+        return render(request, "movies/payment_success.html")
+    except Exception as e:
+        from django.http import HttpResponse
+        return HttpResponse(f"ERROR: {e}")
 def cancel(request):
     return render(request, "movies/payment_cancel.html")
 
