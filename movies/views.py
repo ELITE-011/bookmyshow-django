@@ -42,7 +42,7 @@ def movie_detail(request, id):
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Movie
+from .models import Movie, Booking
 
 
 def book_ticket(request, movie_id):
@@ -55,6 +55,12 @@ def book_ticket(request, movie_id):
         email = request.POST.get("email")
         seats = request.POST.getlist("seats")
         seats_str = ", ".join(seats)
+        Booking.objects.create(
+    name=name,
+    email=email,
+    movie=movie,
+    seats=seats_str
+)
 
         message = f"""
 Hello {name},
@@ -139,19 +145,40 @@ from django.conf import settings
 
 def success(request):
 
-    send_mail(
-        subject="Ticket Confirmation",
-        message="""
+    try:
+        last_booking = Booking.objects.last()
+
+        if last_booking:
+            send_mail(
+                subject="Ticket Confirmation",
+                message="""
 Your booking has been confirmed.
 
 Thank you for booking with BookMyShow.
-        """,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=["deepj3071@gmail.com"],
-        fail_silently=True
-    )
+                """,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[last_booking.email],
+                fail_silently=True
+            )
+
+    except Exception as e:
+        print("EMAIL ERROR:", e)
 
     return render(request, "movies/payment_success.html")
 
 def cancel(request):
     return render(request, "movies/payment_cancel.html")
+
+from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
+
+def test_email(request):
+    send_mail(
+        "Test Email",
+        "Hello Deep, email is working!",
+        settings.DEFAULT_FROM_EMAIL,
+        ["deepj3071@gmail.com"],
+        fail_silently=False
+    )
+    return HttpResponse("Email Sent Successfully")
