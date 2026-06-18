@@ -143,28 +143,10 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 
+from django.http import HttpResponse
+
 def success(request):
-
-    try:
-        last_booking = Booking.objects.last()
-
-        if last_booking:
-            send_mail(
-                subject="Ticket Confirmation",
-                message="""
-Your booking has been confirmed.
-
-Thank you for booking with BookMyShow.
-                """,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[last_booking.email],
-                fail_silently=True
-            )
-
-    except Exception as e:
-        print("EMAIL ERROR:", e)
-
-    return render(request, "movies/payment_success.html")
+    return HttpResponse("SUCCESS PAGE WORKING")
 
 def cancel(request):
     return render(request, "movies/payment_cancel.html")
