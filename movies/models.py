@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 import re
 
 
@@ -69,16 +70,34 @@ def create_seats(sender, instance, created, **kwargs):
 class Seat(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     seat_number = models.CharField(max_length=10)
+
     is_booked = models.BooleanField(default=False)
+
+    # NEW
+    is_reserved = models.BooleanField(default=False)
+
+    # NEW
+    reserved_until = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.seat_number} - {self.movie.title}"
+    
+    
 class Booking(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     seats = models.CharField(max_length=50)
     booking_date = models.DateTimeField(auto_now_add=True)
+
+    payment_status = models.CharField(
+        max_length=20,
+        default='Pending'
+    )
+    reserved_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.name} - {self.movie.title}"

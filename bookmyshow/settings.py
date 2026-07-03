@@ -5,7 +5,6 @@ Django settings for bookmyshow project.
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import dj_database_url
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,12 +75,8 @@ WSGI_APPLICATION = 'bookmyshow.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bookmyshow_jero',
-        'USER': 'bookmyshow_user',
-        'PASSWORD': 'uBi77IYhL987puuSGA9SUIZOZflyFqXm',
-        'HOST': 'dpg-d89fmqi8qa3s73e0nrf0-a.oregon-postgres.render.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -103,6 +98,9 @@ USE_TZ = True
 
 # STATIC FILES
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

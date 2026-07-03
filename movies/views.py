@@ -1,10 +1,23 @@
-from django.shortcuts import render
-from .models import Movie, Genre, Language
+import csv
+import json
+from datetime import timedelta
 
+import stripe
+
+from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.mail import send_mail
+from django.db.models import Count, Q
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+
+from .models import Booking, Genre, Language, Movie, Seat, Show
 
 def movie_list(request):
     movies = Movie.objects.all()
-
+    
+    search_query = request.GET.get("search")
     selected_genre = request.GET.get('genre')
     selected_language = request.GET.get('language')
 
@@ -13,6 +26,11 @@ def movie_list(request):
 
     if selected_language:
         movies = movies.filter(language__name=selected_language)
+        
+    if search_query:
+        movies = movies.filter(
+            Q(title__icontains=search_query)
+    )
 
     movies = movies.distinct()
 
@@ -22,11 +40,11 @@ def movie_list(request):
         "languages": Language.objects.all(),
         "selected_genre": selected_genre,
         "selected_language": selected_language,
+        "search_query": search_query,
     }
 
     return render(request, "movies/movie_list.html", context)  
 
-from django.shortcuts import get_object_or_404
 
 def movie_detail(request, id):
     movie = get_object_or_404(Movie, id=id)
@@ -35,15 +53,6 @@ def movie_detail(request, id):
         "movie": movie
     })
     
-    
-    
-    
-    
-from django.shortcuts import render, get_object_or_404
-from django.core.mail import send_mail
-from django.conf import settings
-from .models import Movie, Booking
-
 
 def book_ticket(request, movie_id):
 
@@ -55,53 +64,48 @@ def book_ticket(request, movie_id):
         email = request.POST.get("email")
         seats = request.POST.getlist("seats")
         seats_str = ", ".join(seats)
-        Booking.objects.create(
-    name=name,
-    email=email,
-    movie=movie,
-    seats=seats_str
-)
 
-        message = f"""
-Hello {name},
+        booking = Booking.objects.create(
+            name=name,
+            email=email,
+            movie=movie,
+            seats=seats_str,
+            payment_status='Pending'
+        )
 
-Your booking is confirmed!
+  # Reserve selected seats for 5 minutes
+        for seat_no in seats:
+            Seat.objects.filter(
+                movie=movie,
+                seat_number=seat_no
+            ).update(
+                is_reserved=True,
+                reserved_until=timezone.now() + timedelta(minutes=5)
+            )
 
-Movie: {movie.title}
-Seats: {seats_str}
+        request.session['booking_id'] = booking.id
 
-Enjoy your movie experience 🎥🍿
-"""
-
-        # SAFE EMAIL SEND (non-blocking protection)
-        try:
-            import threading
-
-            def send_email():
-                try:
-                    send_mail(
-                        subject="Ticket Confirmation",
-                        message=message,
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[email],
-                        fail_silently=True
-                    )
-                except Exception as e:
-                    print("EMAIL ERROR:", e)
-
-            threading.Thread(target=send_email).start()
-
-        except Exception as e:
-            print("THREAD ERROR:", e)
-
-        return render(request, "movies/success.html", {"movie": movie})
+        return redirect('pay')
 
     return render(request, "movies/book_ticket.html", {"movie": movie})
 
-from .models import Seat   # keep this import
 
 def seat_selection(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
+    
+    
+    # Release expired reservations
+    expired_seats = Seat.objects.filter(
+        movie=movie,
+        is_reserved=True,
+        reserved_until__lt=timezone.now(),
+        is_booked=False
+    )
+
+    expired_seats.update(
+        is_reserved=False,
+        reserved_until=None
+    )
 
     seats = Seat.objects.filter(movie=movie)
 
@@ -109,16 +113,14 @@ def seat_selection(request, movie_id):
         "movie": movie,
         "seats": seats
     })
-import stripe
-from django.conf import settings
-from django.shortcuts import redirect
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def create_checkout_session(request):
+    domain_url = request.build_absolute_uri('/')[:-1]
+
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
-
         line_items=[{
             'price_data': {
                 'currency': 'inr',
@@ -129,32 +131,64 @@ def create_checkout_session(request):
             },
             'quantity': 1,
         }],
-
         mode='payment',
-
-        success_url='https://bookmyshow-django-1-mi2b.onrender.com/success/',
-        cancel_url='https://bookmyshow-django-1-mi2b.onrender.com/cancel/',
+        success_url=domain_url + '/success/',
+        cancel_url=domain_url + '/cancel/',
     )
 
-    return redirect(session.url)    
-
-from django.http import HttpResponse
-
-from django.core.mail import send_mail
-from django.conf import settings
+    return redirect(session.url)   
 
 def success(request):
-    try:
+    booking_id = request.session.get('booking_id')
+
+    if not booking_id:
         return render(request, "movies/payment_success.html")
-    except Exception as e:
-        from django.http import HttpResponse
-        return HttpResponse(f"ERROR: {e}")
+
+    booking = Booking.objects.get(id=booking_id)
+
+    if booking.payment_status == "Pending":
+
+        booking.payment_status = "Paid"
+        booking.save()
+
+        message = f"""
+Hello {booking.name},
+
+Your booking is confirmed!
+
+Movie: {booking.movie.title}
+Seats: {booking.seats}
+
+Enjoy your movie experience 🎥🍿
+"""
+
+        send_mail(
+            subject="Ticket Confirmation",
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[booking.email],
+            fail_silently=True
+        )
+
+        seat_numbers = booking.seats.split(",")
+
+        for seat in seat_numbers:
+            Seat.objects.filter(
+                movie=booking.movie,
+                seat_number=seat.strip()
+            ).update(
+                is_booked=True,
+                is_reserved=False,
+                reserved_until=None
+            )
+
+    return render(
+        request,
+        "movies/payment_success.html",
+        {"booking": booking}
+    )
 def cancel(request):
     return render(request, "movies/payment_cancel.html")
-
-from django.http import HttpResponse
-from django.core.mail import send_mail
-from django.conf import settings
 
 def test_email(request):
     send_mail(
@@ -165,3 +199,143 @@ def test_email(request):
         fail_silently=False
     )
     return HttpResponse("Email Sent Successfully")
+
+
+def release_reservation(request):
+
+    booking_id = request.session.get("booking_id")
+
+    if not booking_id:
+        return JsonResponse({"status": "no booking"})
+
+    try:
+        booking = Booking.objects.get(id=booking_id)
+
+        if booking.payment_status == "Pending":
+
+            seat_numbers = booking.seats.split(",")
+
+            for seat in seat_numbers:
+                Seat.objects.filter(
+                    movie=booking.movie,
+                    seat_number=seat.strip()
+                ).update(
+                    is_reserved=False,
+                    reserved_until=None
+                )
+
+            booking.delete()
+
+    except Booking.DoesNotExist:
+        pass
+
+    return JsonResponse({"status": "released"})
+
+def reset_seats(request):
+
+    Seat.objects.all().update(
+        is_booked=False,
+        is_reserved=False,
+        reserved_until=None
+    )
+
+    Booking.objects.all().delete()
+
+    return HttpResponse(
+        "<h2>✅ All seats and bookings have been reset successfully.</h2>"
+        "<br><a href='/'>Go to Home</a>"
+    )
+   
+
+@staff_member_required
+def admin_dashboard(request):
+
+    total_bookings = Booking.objects.filter(
+        payment_status="Paid"
+    ).count()
+
+    paid_bookings = Booking.objects.filter(payment_status="Paid")
+
+    total_tickets = 0
+
+    for booking in paid_bookings:
+        total_tickets += len(booking.seats.split(","))
+
+    total_revenue = total_tickets * 200
+
+    total_movies = Movie.objects.count()
+
+    total_shows = Show.objects.count()
+
+    total_seats = Seat.objects.count()
+    popular_movies = (
+    Booking.objects
+    .filter(payment_status="Paid")
+    .values("movie__title")
+    .annotate(total_bookings=Count("id"))
+    .order_by("-total_bookings")[:5]
+)
+    recent_bookings = Booking.objects.select_related("movie").order_by("-booking_date")[:10]
+    
+    
+    movie_labels = [movie["movie__title"] for movie in popular_movies]
+    movie_counts = [movie["total_bookings"] for movie in popular_movies]
+
+    paid_count = Booking.objects.filter(payment_status="Paid").count()
+    pending_count = Booking.objects.filter(payment_status="Pending").count()
+
+    context = {
+    "total_revenue": total_revenue,
+    "total_bookings": total_bookings,
+    "total_movies": total_movies,
+    "total_shows": total_shows,
+    "total_seats": total_seats,
+
+    "popular_movies": popular_movies,
+    "recent_bookings": recent_bookings,
+
+    "movie_labels": json.dumps(movie_labels),
+    "movie_counts": json.dumps(movie_counts),
+
+    "paid_count": paid_count,
+    "pending_count": pending_count,
+}
+
+    return render(
+        request,
+        "movies/admin_dashboard.html",
+        context
+    )
+    
+    
+
+@staff_member_required
+def export_bookings_csv(request):
+
+    response = HttpResponse(content_type='text/csv')
+
+    response['Content-Disposition'] = 'attachment; filename="bookings.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow([
+        'Customer',
+        'Movie',
+        'Seats',
+        'Payment Status',
+        'Booking Date'
+    ])
+
+    bookings = Booking.objects.select_related('movie').all()
+
+    for booking in bookings:
+
+        writer.writerow([
+            booking.name,
+            booking.movie.title,
+            booking.seats,
+            booking.payment_status,
+            booking.booking_date.strftime("%d-%m-%Y %H:%M")
+        ])
+
+    return response

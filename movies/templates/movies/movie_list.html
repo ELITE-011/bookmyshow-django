@@ -30,6 +30,40 @@ width:90%;
 margin:40px auto;
 }
 
+.filter-bar{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+align-items:center;
+justify-content:center;
+margin-bottom:35px;
+}
+
+.filter-bar input,
+.filter-bar select{
+padding:12px;
+font-size:15px;
+border:none;
+border-radius:8px;
+min-width:200px;
+outline:none;
+}
+
+.search-btn{
+background:linear-gradient(45deg,#ff416c,#ff4b2b);
+color:white;
+border:none;
+padding:12px 25px;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+transition:.3s;
+}
+
+.search-btn:hover{
+transform:scale(1.05);
+}
+
 .movie-grid{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
@@ -128,7 +162,55 @@ border-radius:10px;
 
 <div class="container">
 
+<form method="GET" class="filter-bar">
+
+<input
+type="text"
+name="search"
+placeholder="🔍 Search Movie..."
+value="{{ search_query|default:'' }}">
+
+<select name="genre">
+
+<option value="">All Genres</option>
+
+{% for genre in genres %}
+
+<option
+value="{{ genre.name }}"
+{% if selected_genre == genre.name %}selected{% endif %}>
+{{ genre.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="language">
+
+<option value="">All Languages</option>
+
+{% for language in languages %}
+
+<option
+value="{{ language.name }}"
+{% if selected_language == language.name %}selected{% endif %}>
+{{ language.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<button type="submit" class="search-btn">
+Search
+</button>
+
+</form>
+
 <div class="movie-grid">
+
+{% if movies %}
 
 {% for movie in movies %}
 
@@ -171,6 +253,14 @@ onclick="openTrailer('{{ movie.trailer_url }}')">
 </div>
 
 {% endfor %}
+
+{% else %}
+
+<h2 style="color:white;text-align:center;">
+No movies found.
+</h2>
+
+{% endif %}
 
 </div>
 

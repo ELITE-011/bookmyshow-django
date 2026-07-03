@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+
+   <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+
+    <title>BookMyShow Admin Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-left">
+    <h1>🎬 BookMyShow Admin Dashboard</h1>
+    <p>Movie Ticket Booking Analytics</p>
+</div>
+
+<div class="header-right">
+    <div class="admin-card">
+        <h4>👤 Administrator</h4>
+        <p>Welcome Back</p>
+    </div>
+</div>
+
+</div>
+
+<div class="container">
+
+<a href="{% url 'export_bookings_csv' %}" class="export-btn">
+    📥 Export Bookings CSV
+</a>
+
+<p class="updated-time">
+    Last Updated:
+    {% now "d M Y, h:i A" %}
+</p>
+
+<div class="cards">
+
+<div class="card">      
+
+<small>💰 Revenue</small>
+
+<h1>₹ {{ total_revenue }}</h1>
+
+</div>
+
+<div class="card">      
+
+<small>🎫 Bookings</small>
+
+<h1>{{ total_bookings }}</h1>
+
+</div>
+
+<div class="card">      
+
+<small>🎬 Movies</small>
+
+<h1>{{ total_movies }}</h1>
+
+</div>
+
+<div class="card">      
+
+<small>🎭 Shows</small>
+
+<h1>{{ total_shows }}</h1>
+
+</div>
+
+<div class="card">      
+
+<small>💺 Seats</small>
+
+<h1>{{ total_seats }}</h1>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="section-title">
+
+🏆 Top 5 Most Popular Movies
+
+</h2>
+
+<table>
+
+<tr>
+
+<th>Movie</th>
+
+<th>Total Bookings</th>
+
+</tr>
+
+{% for movie in popular_movies %}
+
+<tr>
+
+    <td>{{ movie.movie__title }}</td>
+
+    <td>{{ movie.total_bookings }}</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="2">No bookings available.</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="section">
+
+<h2 class="section-title">
+
+📊 Analytics
+
+</h2>
+
+<div class="chart-container">
+
+<div class="chart-card">
+
+<h3>Revenue by Movie</h3>
+
+<canvas id="movieChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h3>Booking Status</h3>
+
+<canvas id="statusChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2 class="section-title">
+
+🧾 Recent Bookings
+
+</h2>
+
+<table>
+
+<tr>
+    <th>Customer</th>
+    <th>Movie</th>
+    <th>Seats</th>
+    <th>Status</th>
+    <th>Date</th>
+</tr>
+
+{% for booking in recent_bookings %}
+
+<tr>
+
+    <td>{{ booking.name }}</td>
+
+    <td>{{ booking.movie.title }}</td>
+
+    <td>{{ booking.seats }}</td>
+
+    <td>
+        {% if booking.payment_status == "Paid" %}
+            <span class="paid">Paid</span>
+        {% else %}
+            <span class="pending">Pending</span>
+        {% endif %}
+    </td>
+
+    <td>{{ booking.booking_date|date:"d M Y H:i" }}</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="5">No bookings found.</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="footer">
+
+BookMyShow Django Clone • Internship Project
+
+</div>
+
+</div>
+
+<script>
+
+const movieLabels = JSON.parse('{{ movie_labels|escapejs }}');
+const movieCounts = JSON.parse('{{ movie_counts|escapejs }}');
+
+new Chart(document.getElementById('movieChart'),{
+    type:'bar',
+    data:{
+        labels:movieLabels,
+        datasets:[{
+            label:'Paid Bookings',
+            data:movieCounts,
+            backgroundColor:'#2563eb'
+        }]
+    },
+    options:{
+        responsive:true,
+        plugins:{
+            legend:{
+                display:false
+            }
+        }
+    }
+});
+
+new Chart(document.getElementById('statusChart'),{
+    type:'pie',
+    data:{
+        labels:['Paid','Pending'],
+        datasets:[{
+            data:[
+                {{ paid_count }},
+                {{ pending_count }}
+            ]
+        }]
+    },
+    options:{
+        responsive:true
+    }
+});
+
+</script>
+
+</body>
+
+</html>

@@ -51,7 +51,18 @@
 <div class="card">
     <h1>🎉 Payment Successful</h1>
 
-    <p>Your movie ticket has been booked successfully.</p>
+    <p>
+Your ticket for <b>{{ booking.movie.title }}</b>
+has been booked successfully.
+</p>
+
+<p>
+Seats: {{ booking.seats }}
+</p>
+
+<p>
+Please check your email for ticket confirmation.
+</p>
 
     <a href="/" class="btn">Go Home</a>
 </div>

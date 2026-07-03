@@ -53,6 +53,11 @@
             cursor: not-allowed;
         }
 
+        .reserved {
+            background: orange;
+            cursor: not-allowed;
+        }
+
         input[type="checkbox"] {
             display: none;
         }
@@ -97,6 +102,8 @@
 <h2>Select Seats for {{ movie.title }}</h2>
 <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="poster">
 
+<h3 id="timer" style="color:yellow;"></h3>
+
 <div class="screen">Screen</div>
 
 <form method="POST" action="{% url 'book_ticket' movie.id %}">
@@ -106,10 +113,16 @@
         {% for seat in seats %}
             <label>
                 <input type="checkbox" name="seats" value="{{ seat.seat_number }}"
-                {% if seat.is_booked %}disabled{% endif %}>
+                  {% if seat.is_booked or seat.is_reserved %}disabled{% endif %}>
 
-                <div class="seat 
-                    {% if seat.is_booked %}booked{% else %}available{% endif %}">
+                <div class="seat
+                    {% if seat.is_booked %}
+                        booked
+                    {% elif seat.is_reserved %}
+                        reserved
+                    {% else %}
+                        available
+                    {% endif %}">
                     {{ seat.seat_number }}
                 </div>
             </label>
@@ -121,27 +134,61 @@
         <input type="email" name="email" placeholder="Your Email" required>
     </div>
 
-</form>
 <br>
 
-<a href="/pay/">
-    <button>Pay Now</button>
-</a>
+<button type="submit">
+    Pay Now
+</button>
 
+</form>
 </body>
 </html>
 <script>
 document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-    checkbox.addEventListener('change', function() {
+    checkbox.addEventListener('change', function () {
         const seat = this.nextElementSibling;
 
         if (this.checked) {
             seat.classList.remove('available');
             seat.classList.add('selected');
+
+            // Start timer only once
+            if (!window.timerStarted) {
+                window.timerStarted = true;
+                startTimer(300); // 5 minutes
+            }
         } else {
             seat.classList.remove('selected');
             seat.classList.add('available');
         }
     });
 });
+
+function startTimer(seconds) {
+
+    const timer = document.getElementById("timer");
+
+    const countdown = setInterval(function () {
+
+        let minutes = Math.floor(seconds / 60);
+        let secs = seconds % 60;
+
+        timer.innerHTML =
+            "⏳ Complete payment in " +
+            minutes + ":" +
+            (secs < 10 ? "0" : "") + secs;
+
+        seconds--;
+
+        if (seconds < 0) {
+
+            clearInterval(countdown);
+
+            alert("Reservation expired!");
+
+            window.location.reload();
+        }
+
+    }, 1000);
+}
 </script>
