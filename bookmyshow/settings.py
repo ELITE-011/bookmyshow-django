@@ -16,7 +16,7 @@ SECRET_KEY = os.environ.get(
     "django-insecure-bookmyshow-project-secret-key"
 )
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
