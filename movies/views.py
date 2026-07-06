@@ -162,13 +162,13 @@ Seats: {booking.seats}
 Enjoy your movie experience 🎥🍿
 """
 
-        send_mail(
-            subject="Ticket Confirmation",
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[booking.email],
-            fail_silently=True
-        )
+       # send_mail(
+        #    subject="Ticket Confirmation",
+         #   message=message,
+          #  from_email=settings.DEFAULT_FROM_EMAIL,
+           # recipient_list=[booking.email],
+           # fail_silently=True
+       # )
 
         seat_numbers = booking.seats.split(",")
 
