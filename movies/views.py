@@ -141,18 +141,21 @@ def create_checkout_session(request):
 def success(request):
     booking_id = request.session.get('booking_id')
 
+    print("SUCCESS PAGE OPENED")
+
     if not booking_id:
+        print("NO BOOKING ID FOUND")
         return render(request, "movies/payment_success.html")
 
     booking = Booking.objects.get(id=booking_id)
-    
+
     print(f"Booking ID: {booking.id}")
     print(f"Customer Email: {booking.email}")
 
     if booking.payment_status == "Pending":
 
         print("PAYMENT PENDING -> MARKING PAID")
-  
+
         booking.payment_status = "Paid"
         booking.save()
 
@@ -167,15 +170,23 @@ Seats: {booking.seats}
 Enjoy your movie experience 🎥🍿
 """
 
-        send_mail(
-            subject="Ticket Confirmation",
-            message=message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[booking.email],
-            fail_silently=False
-        )
-        print("EMAIL SENT SUCCESSFULLY")
-        
+        print("SENDING EMAIL...")
+
+        try:
+            send_mail(
+                subject="Ticket Confirmation",
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[booking.email],
+                fail_silently=False,
+            )
+            print("EMAIL SENT SUCCESSFULLY")
+
+        except Exception as e:
+            print("EMAIL ERROR:", repr(e))
+            raise
+
+        # Mark seats as booked only after email section
         seat_numbers = booking.seats.split(",")
 
         for seat in seat_numbers:
@@ -193,6 +204,7 @@ Enjoy your movie experience 🎥🍿
         "movies/payment_success.html",
         {"booking": booking}
     )
+ 
 def cancel(request):
     return render(request, "movies/payment_cancel.html")
 
