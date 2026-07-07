@@ -209,6 +209,7 @@ def cancel(request):
     return render(request, "movies/payment_cancel.html")
 
 def test_email(request):
+    try:
         send_mail(
             "Test Email",
             "Hello Deep, email is working!",
@@ -218,6 +219,9 @@ def test_email(request):
         )
         return HttpResponse("Email Sent Successfully")
 
+    except Exception as e:
+        print("EMAIL ERROR:", repr(e))
+        return HttpResponse("Email failed, but server is still running.")
     
 
 def release_reservation(request):
