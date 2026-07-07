@@ -145,9 +145,14 @@ def success(request):
         return render(request, "movies/payment_success.html")
 
     booking = Booking.objects.get(id=booking_id)
+    
+    print(f"Booking ID: {booking.id}")
+    print(f"Customer Email: {booking.email}")
 
     if booking.payment_status == "Pending":
 
+        print("PAYMENT PENDING -> MARKING PAID")
+  
         booking.payment_status = "Paid"
         booking.save()
 
@@ -167,9 +172,10 @@ Enjoy your movie experience 🎥🍿
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[booking.email],
-            fail_silently=True
+            fail_silently=False
         )
-
+        print("EMAIL SENT SUCCESSFULLY")
+        
         seat_numbers = booking.seats.split(",")
 
         for seat in seat_numbers:

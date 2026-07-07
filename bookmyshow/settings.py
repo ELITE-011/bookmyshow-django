@@ -21,7 +21,7 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,bookmyshow-django-1-mi2b.onrender.com"
+    "127.0.0.1,localhost,bookmyshow-django-x753.onrender.com"
 ).split(",")
 
 
