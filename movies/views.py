@@ -209,18 +209,19 @@ def cancel(request):
     return render(request, "movies/payment_cancel.html")
 
 def test_email(request):
-    try:
-        send_mail(
-            "Test Email",
-            "Hello Deep, email is working!",
-            settings.DEFAULT_FROM_EMAIL,
-            ["deepj3071@gmail.com"],
-            fail_silently=False,
-        )
-        return HttpResponse("Email Sent Successfully")
+  #  try:
+   #     send_mail(
+    #        "Test Email",
+     #       "Hello Deep, email is working!",
+      #      settings.DEFAULT_FROM_EMAIL,
+       #     ["deepj3071@gmail.com"],
+        #    fail_silently=False,
+        #)
+       # return HttpResponse("Email Sent Successfully")
 
-    except Exception as e:
-        return HttpResponse(f"EMAIL ERROR: {repr(e)}")
+    #except Exception as e:
+     #   return HttpResponse(f"EMAIL ERROR: {repr(e)}")
+     print("EMAIL SKIPPED")
 
 def release_reservation(request):
 
