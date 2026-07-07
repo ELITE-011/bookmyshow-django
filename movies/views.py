@@ -220,7 +220,7 @@ def test_email(request):
         return HttpResponse("Email Sent Successfully")
 
     except Exception as e:
-        return HttpResponse(f"EMAIL ERROR: {e}")
+        return HttpResponse(f"EMAIL ERROR: {repr(e)}")
 
 def release_reservation(request):
 
