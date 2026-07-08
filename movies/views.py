@@ -139,37 +139,25 @@ def create_checkout_session(request):
     return redirect(session.url)   
 
 def success(request):
-    booking_id = request.session.pop("booking_id", None)
+    booking_id = request.session.get("booking_id")
 
     print("SUCCESS PAGE OPENED")
 
     if not booking_id:
+        print("NO BOOKING ID FOUND")
         return render(request, "movies/payment_success.html")
 
-    try:
-        booking = Booking.objects.get(id=booking_id)
-    except Booking.DoesNotExist:
-        return render(request, "movies/payment_success.html")
+    booking = Booking.objects.get(id=booking_id)
 
-    if booking.payment_status != "Paid":
+    print(f"Booking ID: {booking.id}")
+    print(f"Customer Email: {booking.email}")
+
+    if booking.payment_status == "Pending":
+
+        print("PAYMENT PENDING -> MARKING PAID")
 
         booking.payment_status = "Paid"
         booking.save()
-
-        seat_numbers = [
-            seat.strip()
-            for seat in booking.seats.split(",")
-            if seat.strip()
-        ]
-
-        Seat.objects.filter(
-            movie=booking.movie,
-            seat_number__in=seat_numbers
-        ).update(
-            is_booked=True,
-            is_reserved=False,
-            reserved_until=None,
-        )
 
         message = f"""
 Hello {booking.name},
@@ -179,8 +167,10 @@ Your booking is confirmed!
 Movie: {booking.movie.title}
 Seats: {booking.seats}
 
-Enjoy your movie experience 🎬🍿
+Enjoy your movie experience 🎥🍿
 """
+
+        print("SENDING EMAIL...")
 
         try:
             send_mail(
@@ -188,18 +178,33 @@ Enjoy your movie experience 🎬🍿
                 message=message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[booking.email],
-                fail_silently=True,
+                fail_silently=False,
             )
-            print("EMAIL SENT")
+            print("EMAIL SENT SUCCESSFULLY")
+
         except Exception as e:
-            print("EMAIL ERROR:", e)
+            print("EMAIL ERROR:", repr(e))
+            raise
+
+        # Mark seats as booked after payment
+        seat_numbers = booking.seats.split(",")
+
+        for seat in seat_numbers:
+            Seat.objects.filter(
+                movie=booking.movie,
+                seat_number=seat.strip()
+            ).update(
+                is_booked=True,
+                is_reserved=False,
+                reserved_until=None
+            )
 
     return render(
         request,
         "movies/payment_success.html",
         {
-            "booking": booking,
-        },
+            "booking": booking
+        }
     )
  
 def cancel(request):
