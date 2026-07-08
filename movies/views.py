@@ -215,7 +215,7 @@ Enjoy your movie experience 🎬🍿
                 message=message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[booking.email],
-                fail_silently=False,
+                fail_silently=True,
             )
             print("6. AFTER EMAIL")
             print("EMAIL SENT SUCCESSFULLY")
