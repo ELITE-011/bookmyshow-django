@@ -256,7 +256,7 @@ def test_email(request):
 
         print(response)
 
-        return HttpResponse("Email Sent Successfully")
+        return render(request, "movies/test_email.html")
 
     except Exception as e:
 
