@@ -242,19 +242,27 @@ def cancel(request):
     return render(request, "movies/payment_cancel.html")
 
 def test_email(request):
+
     try:
-        send_mail(
-            "Test Email",
-            "Hello Deep, email is working!",
-            settings.DEFAULT_FROM_EMAIL,
-            ["deepj3071@gmail.com"],
-            fail_silently=False,
-        )
+
+        resend.api_key = settings.RESEND_API_KEY
+
+        response = resend.Emails.send({
+            "from": "BookMyShow <onboarding@resend.dev>",
+            "to": ["deepj3071@gmail.com"],
+            "subject": "Test Email",
+            "text": "Hello Deep! Resend is working successfully."
+        })
+
+        print(response)
+
         return HttpResponse("Email Sent Successfully")
 
     except Exception as e:
+
         print("EMAIL ERROR:", repr(e))
-        return HttpResponse("Email failed, but server is still running.")
+
+        return HttpResponse("Email failed.")
     
 
 def release_reservation(request):
