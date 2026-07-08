@@ -158,6 +158,9 @@ def success(request):
 
         booking.payment_status = "Paid"
         booking.save()
+         # ADD HERE
+        booking.refresh_from_db()
+        print("Payment Status After Save:", booking.payment_status)
 
         message = f"""
 Hello {booking.name},
@@ -166,6 +169,7 @@ Your booking is confirmed!
 
 Movie: {booking.movie.title}
 Seats: {booking.seats}
+
 
 Enjoy your movie experience 🎥🍿
 """
