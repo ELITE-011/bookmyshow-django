@@ -151,7 +151,7 @@ def create_checkout_session(request):
     )
 
     return redirect(session.url)   
-
+print("1. SUCCESS START")
 def success(request):
     print("SUCCESS PAGE OPENED")
 
@@ -163,6 +163,7 @@ def success(request):
 
     try:
         booking = Booking.objects.get(id=booking_id)
+        print("2. BOOKING FOUND")
     except Booking.DoesNotExist:
         print("BOOKING NOT FOUND")
         return render(request, "movies/payment_success.html")
@@ -174,6 +175,7 @@ def success(request):
 
         booking.payment_status = "Paid"
         booking.save()
+        print("3. BOOKING SAVED")
 
         booking.refresh_from_db()
         print("Payment Status After Save:", booking.payment_status)
@@ -192,7 +194,7 @@ def success(request):
             is_reserved=False,
             reserved_until=None
         )
-
+        print("4. SEATS UPDATED")
         message = f"""
 Hello {booking.name},
 
@@ -207,6 +209,7 @@ Enjoy your movie experience 🎬🍿
         print("SENDING EMAIL...")
 
         try:
+            print("5. BEFORE EMAIL")
             send_mail(
                 subject="Ticket Confirmation",
                 message=message,
@@ -214,12 +217,12 @@ Enjoy your movie experience 🎬🍿
                 recipient_list=[booking.email],
                 fail_silently=False,
             )
-
+            print("6. AFTER EMAIL")
             print("EMAIL SENT SUCCESSFULLY")
 
         except Exception as e:
             print("EMAIL ERROR:", repr(e))
-
+            print("7. RETURNING SUCCESS PAGE")
     return render(
         request,
         "movies/payment_success.html",
