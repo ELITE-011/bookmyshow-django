@@ -139,13 +139,11 @@ def create_checkout_session(request):
     return redirect(session.url)   
 
 def success(request):
-    booking_id = request.session.get('booking_id')
+    return render(request, "movies/payment_success.html")
 
     print("SUCCESS PAGE OPENED")
 
-    if not booking_id:
-        print("NO BOOKING ID FOUND")
-        return render(request, "movies/payment_success.html")
+    
 
     booking = Booking.objects.get(id=booking_id)
 
