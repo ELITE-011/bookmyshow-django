@@ -3,7 +3,7 @@ import json
 from datetime import timedelta
 
 import stripe
-
+import resend
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import send_mail
@@ -151,7 +151,9 @@ def create_checkout_session(request):
     )
 
     return redirect(session.url)   
+
 print("1. SUCCESS START")
+
 def success(request):
     print("SUCCESS PAGE OPENED")
 
@@ -194,7 +196,9 @@ def success(request):
             is_reserved=False,
             reserved_until=None
         )
+
         print("4. SEATS UPDATED")
+
         message = f"""
 Hello {booking.name},
 
@@ -209,20 +213,23 @@ Enjoy your movie experience 🎬🍿
         print("SENDING EMAIL...")
 
         try:
-            print("5. BEFORE EMAIL")
-            send_mail(
-                subject="Ticket Confirmation",
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[booking.email],
-                fail_silently=True,
-            )
-            print("6. AFTER EMAIL")
+            resend.api_key = settings.RESEND_API_KEY
+
+            response = resend.Emails.send({
+                "from": "BookMyShow <onboarding@resend.dev>",
+                "to": [booking.email],
+                "subject": "Ticket Confirmation",
+                "text": message,
+            })
+
             print("EMAIL SENT SUCCESSFULLY")
+            print(response)
 
         except Exception as e:
             print("EMAIL ERROR:", repr(e))
-            print("7. RETURNING SUCCESS PAGE")
+
+    print("7. RETURNING SUCCESS PAGE")
+
     return render(
         request,
         "movies/payment_success.html",
