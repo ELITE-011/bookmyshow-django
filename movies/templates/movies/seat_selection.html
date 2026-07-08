@@ -110,7 +110,8 @@
     {% csrf_token %}
 
     <div class="seats">
-        {% for seat in seats %}
+        {% for row in seat_map %}
+    {% for seat in row %}
             <label>
                 <input type="checkbox" name="seats" value="{{ seat.seat_number }}"
                   {% if seat.is_booked or seat.is_reserved %}disabled{% endif %}>
@@ -126,7 +127,8 @@
                     {{ seat.seat_number }}
                 </div>
             </label>
-        {% endfor %}
+            {% endfor %}
+{% endfor %}
     </div>
 
     <div class="form-box">
