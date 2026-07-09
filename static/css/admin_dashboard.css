@@ -1,10 +1,13 @@
-body {
+* {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:
-        linear-gradient(180deg,
-            #f3f7fb,
-            #edf4ff);
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #0f172a;
+    color: white;
 }
 
 .header {
