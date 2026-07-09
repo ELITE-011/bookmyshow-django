@@ -25,7 +25,7 @@ body {
 }
 
 .updated-time {
-    color: #1e2124;
+    color: #d1d5db;
     font-size: 14px;
     margin-top: 8px;
 }
@@ -106,8 +106,10 @@ body {
 }
 
 .section-title {
-    color: #1e293b;
-    margin-bottom: 15px;
+    color: #f8fafc;
+    margin-bottom: 18px;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 table {
@@ -136,6 +138,8 @@ td {
     padding: 15px;
     border-bottom: 1px solid #eee;
     text-align: center;
+    color: #1f2937;
+    font-weight: 500;
 }
 
 tr:hover {
@@ -187,14 +191,20 @@ tr:hover {
     background: #ef4444;
 }
 
-.card small {
-    color: #6b7280;
-    font-size: 14px;
-}
-
 .card h1 {
     margin-top: 12px;
     font-size: 40px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.card small {
+    display: block;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .5px;
 }
 
 /* Status Badges */
