@@ -84,8 +84,7 @@ def book_ticket(request, movie_id):
             )
 
         request.session['booking_id'] = booking.id
-        request.session['selected_seats'] = seats
-        request.session['ticket_count'] = len(seats)
+        
         return redirect('pay')
 
     return render(request, "movies/book_ticket.html", {"movie": movie})
@@ -134,8 +133,6 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def create_checkout_session(request):
     domain_url = request.build_absolute_uri('/')[:-1]
 
-    ticket_count = request.session.get('ticket_count', 1)
-
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
@@ -144,9 +141,9 @@ def create_checkout_session(request):
                 'product_data': {
                     'name': 'Movie Ticket',
                 },
-                'unit_amount': 20000,   # ₹200 per ticket
+                'unit_amount': 20000,
             },
-            'quantity': ticket_count,
+            'quantity': 1,
         }],
         mode='payment',
         success_url=domain_url + '/success/',
